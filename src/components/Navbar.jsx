@@ -1,27 +1,39 @@
 import React from 'react'
-import {  NavLink } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import Wrapper from './layout/Wrapper'
 
 const Navbar = () => {
   return (
-    <div   >
-        <Wrapper>
-
-        
-
-<div className="flex flex-row place-content-evenly p-4 text-xl sm:text-2xl">
-<NavLink to='/'>
-    Home
-</NavLink>
-<NavLink to="/pastes">
-    Pastes
-</NavLink>
-
-</div>
-
-         
-    </Wrapper>
-     </div>
+    <div className="bg-white shadow-md">
+      <Wrapper>
+        <nav className="flex items-center justify-center space-x-8 py-4">
+          <NavLink 
+            to='/' 
+            className={({ isActive }) => 
+              `text-lg font-medium transition-colors duration-200 ${
+                isActive 
+                  ? 'text-blue-600 border-b-2 border-blue-600' 
+                  : 'text-gray-600 hover:text-blue-600'
+              }`
+            }
+          >
+            Home
+          </NavLink>
+          <NavLink 
+            to="/pastes"
+            className={({ isActive }) => 
+              `text-lg font-medium transition-colors duration-200 ${
+                isActive 
+                  ? 'text-blue-600 border-b-2 border-blue-600' 
+                  : 'text-gray-600 hover:text-blue-600'
+              }`
+            }
+          >
+            Pastes
+          </NavLink>
+        </nav>
+      </Wrapper>
+    </div>
   )
 }
 

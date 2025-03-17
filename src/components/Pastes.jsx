@@ -1,102 +1,82 @@
 import React, { useEffect, useState } from "react";
 import Wrapper from "./layout/Wrapper";
-import {  useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { addToPastes, updateToPastes } from "../redux/PasteSlice";
 
 const Pastes = () => {
-
-
   const [title, setTitle] = useState("");
-  const [value,setValue]=useState('');
-  const [searchParams,setSearchParams]=useSearchParams();
-  const pasteId =searchParams.get("pasteId");
-  console.log("Paste ID:", pasteId); // Debugging
-const dispatch =useDispatch();
-const allPastes =useSelector((state)=>state.paste.pastes)
+  const [value, setValue] = useState('');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const pasteId = searchParams.get("pasteId");
+  const dispatch = useDispatch();
+  const allPastes = useSelector((state) => state.paste.pastes);
 
-useEffect(()=>{
+  useEffect(() => {
+    if (pasteId) {
+      const paste = allPastes.find((p) => p._id === pasteId);
+      setTitle(paste.title);
+      setValue(paste.content);
+    }
+  }, [pasteId]);
 
-  if(pasteId){
-    const paste=allPastes.find((p)=>p._id===pasteId);
-    setTitle(paste.title);
-    setValue(paste.content);
+  function createPaste() {
+    const paste = {
+      title: title,
+      content: value,
+      _id: pasteId || Date.now().toString(36),
+      created: new Date().toISOString(),
+    }
+
+    if (pasteId) {
+      dispatch(updateToPastes(paste));
+    } else {
+      dispatch(addToPastes(paste))
+    }
+
+    setTitle('');
+    setValue('');
+    setSearchParams({});
   }
 
-
-  
-},[pasteId])
-
-
-function createPaste(){
-
-const paste={
-  title:title,
-  content:value,
-  _id:pasteId ||
-  Date.now().toString(36),
-  created:new Date().toISOString(),
-} 
-
-
-
-
-if(pasteId){
-//update
-dispatch(updateToPastes(paste));
-}
-else{
-  //create
-  dispatch(addToPastes(paste))
-
-}
-// after creation or updation
-
-setTitle('');
-setValue('');
-setSearchParams({});
-
-}
-
-
-
-
   return (
-      <Wrapper>
-    <div className="p-10 bg-gray-100">
-     <div>
-     <div className=" flex flex-row place-content-evenly   gap-7 ">
-       <div className="flex flex-row place-content-evenly w-[100%] sm:w-[90%] gap-7" >
-       <input
-          className=" bg-black text-white rounded-md w-[50%]  p-2 mt-2"
-          type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="Enter title here"
-        />
-        {/* onClick={() => setSearchParams({ pasteId: "123" })}  */}
-        {/* <Link to='/pastes'> */}
-        <button onClick={createPaste}  className="bg-black text-white text:sm sm:text-md rounded-md   p-2 mt-2">
-         {
-         pasteId ? "Update Paste":"Create My Paste"
-         }
-        </button>
-       </div>
-        {/* </Link> */}
-      </div>
-      <div className=" flex place-content-evenly mt-4  w-full  gap-7 ">
-<textarea className="bg-black rounded-2xl text-white w-[100%] sm:w-[66%]  p-4"
-value={value}
-placeholder="Enter content here"
-onChange={(e)=>setValue(e.target.value)}
-rows={20}
+    <Wrapper>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-6 sm:p-8">
+        <div className="max-w-4xl mx-auto">
+          <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8">
+            <h1 className="text-2xl font-bold text-gray-800 mb-6">
+              {pasteId ? "Edit Paste" : "Create New Paste"}
+            </h1>
+            
+            <div className="space-y-6">
+              <div className="flex flex-col sm:flex-row gap-4">
+                <input
+                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                  type="text"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="Enter title here"
+                />
+                <button
+                  onClick={createPaste}
+                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium"
+                >
+                  {pasteId ? "Update Paste" : "Create Paste"}
+                </button>
+              </div>
 
-/>
-
+              <textarea
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all resize-none"
+                value={value}
+                placeholder="Enter content here"
+                onChange={(e) => setValue(e.target.value)}
+                rows={20}
+              />
+            </div>
+          </div>
+        </div>
       </div>
-     </div>
-    </div>
-      </Wrapper>
+    </Wrapper>
   );
 };
 
