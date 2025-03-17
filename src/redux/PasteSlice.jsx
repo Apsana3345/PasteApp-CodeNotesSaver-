@@ -21,7 +21,7 @@ toast("paste created successfully")
     },
     updateToPastes: (state,action) => {
       const paste =action.payload;
-      const index =state.pastes.findIndex((item)=>item._id===paste.id)
+      const index =state.pastes.findIndex((item)=>item._id===paste._id)
       if(index>=0)
         state.pastes[index]=paste
       localStorage.setItem("pastes",JSON.stringify(state.pastes))
